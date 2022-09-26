@@ -1,0 +1,16 @@
+version: "3.3"
+
+services:
+  db:
+    image: postgres:14.5-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: species
+      POSTGRES_USER: species_admin
+      POSTGRES_PASSWORD: species_admin
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+volumes:
+  pg-data:

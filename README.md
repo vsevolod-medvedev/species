@@ -1,5 +1,7 @@
 # Species
 
+This pet project is about biological species and aims to demonstrate the use of python async libraries working together.
+
 ## Setup
 
 ```shell

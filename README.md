@@ -14,3 +14,5 @@ pip install -r requirements-dev.txt
 docker-compose up -d
 python main.py 
 ```
+
+Then try to open in browser: http://localhost:8080/api/v1/species

@@ -2,7 +2,7 @@ import json
 
 from aiohttp import web
 
-from app.database import manager
+from app.db import manager
 from app.domain import get_species
 
 

@@ -9,6 +9,10 @@ pyenv virtualenv 3.8 species_38
 pyenv activate species_38
 pip install -r requirements-dev.txt
 ```
+Activate pre-commit hooks:
+```shell
+pre-commit install
+```
 
 ## Running
 

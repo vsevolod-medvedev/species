@@ -19,6 +19,7 @@ def init_database():
     )
     apply_migrations()
     database.set_allow_sync(False)
+    return database
 
 
 def apply_migrations():

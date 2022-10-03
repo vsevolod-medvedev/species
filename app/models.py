@@ -22,3 +22,4 @@ class Observation(BaseModel):
     timestamp = peewee.DateTimeField()
     latitude = peewee.FloatField()
     longitude = peewee.FloatField()
+    # TODO: photos, comment, tags

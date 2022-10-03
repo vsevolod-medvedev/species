@@ -6,7 +6,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: species
+      POSTGRES_DB: species_db
       POSTGRES_USER: species_admin
       POSTGRES_PASSWORD: species_admin
     volumes:

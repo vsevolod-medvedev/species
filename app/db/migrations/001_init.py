@@ -1,27 +1,48 @@
 from yoyo import step
 
-from app.db.__init__ import database
-from app.models import Species, Genus
-
 __depends__ = {}
 
 
-def init_data(connection):
-    Species.drop_table()
-    Genus.drop_table()
-
-    database.create_tables([
-        Genus,
-        Species,
-    ])
-
-    genus = Genus.create(caption='Снегири')
-    Species.create(caption='Снегирь', genus=genus)
-
-    genus = Genus.create(caption='Настоящие дрозды')
-    Species.create(caption='Певчий дрозд', genus=genus)
-
-
 steps = [
-    step(init_data)
+    step("""
+        drop table if exists observation;
+        drop table if exists species;
+        drop table if exists genus;
+    """),
+    step("""
+        create table genus
+        (
+            id      serial
+                primary key,
+            caption varchar(255) not null
+        );
+    """),
+    step("""
+        create table species
+        (
+            id       serial
+                primary key,
+            genus_id integer      not null
+                references genus,
+            caption  varchar(255) not null
+        );
+
+        create index species_genus_id
+            on species (genus_id);
+    """),
+    step("""
+        create table observation
+        (
+            id         serial
+                primary key,
+            species_id integer   not null
+                references species,
+            timestamp  timestamp not null,
+            latitude   real      not null,
+            longitude  real      not null
+        );
+
+        create index observation_species_id
+            on observation (species_id);
+    """),
 ]

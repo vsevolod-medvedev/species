@@ -5,7 +5,7 @@ import yoyo
 
 from app import config
 
-database = peewee_async.PostgresqlDatabase('species')
+database = peewee_async.PostgresqlDatabase(config.DB_NAME)
 manager = peewee_async.Manager(database)
 
 
@@ -25,10 +25,9 @@ def init_database():
 def apply_migrations():
     db_uri = f'postgres://{config.DB_USER}:{config.DB_PASS}@{config.DB_HOST}:{config.DB_PORT}/{config.DB_NAME}'
     backend = yoyo.get_backend(uri=db_uri)
-
+    path = (pathlib.Path(__file__).parent / 'migrations').as_posix()
+    migrations = yoyo.read_migrations(path)
+    if not migrations:
+        raise RuntimeError('Migrations not found!')
     with backend.lock():
-        path = (pathlib.Path(__file__).parent / 'migrations').as_posix()
-        migrations = yoyo.read_migrations(path)
-        if not migrations:
-            raise RuntimeError('Migrations not found!')
         backend.apply_migrations(backend.to_apply(migrations))

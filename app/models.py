@@ -15,3 +15,10 @@ class Genus(BaseModel):
 class Species(BaseModel):
     genus = peewee.ForeignKeyField(Genus)
     caption = peewee.CharField()
+
+
+class Observation(BaseModel):
+    species = peewee.ForeignKeyField(Species)
+    timestamp = peewee.DateTimeField()
+    latitude = peewee.FloatField()
+    longitude = peewee.FloatField()

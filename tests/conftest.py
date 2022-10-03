@@ -15,5 +15,5 @@ def db():
 
 @pytest.fixture(scope='session', autouse=True)
 def event_loop():
-    uvloop.install()
+    uvloop.install()  # Use fast event loop implementation
     yield asyncio.get_event_loop()

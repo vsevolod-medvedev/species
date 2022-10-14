@@ -9,7 +9,7 @@ database = peewee_async.PostgresqlDatabase(config.DB_NAME)
 manager = peewee_async.Manager(database)
 
 
-def init_database():
+def init_database() -> peewee_async.PostgresqlDatabase:
     database.init(
         host=config.DB_HOST,
         port=config.DB_PORT,
@@ -22,7 +22,7 @@ def init_database():
     return database
 
 
-def apply_migrations():
+def apply_migrations() -> None:
     db_uri = f'postgres://{config.DB_USER}:{config.DB_PASS}@{config.DB_HOST}:{config.DB_PORT}/{config.DB_NAME}'
     backend = yoyo.get_backend(uri=db_uri)
     path = (pathlib.Path(__file__).parent / 'migrations').as_posix()

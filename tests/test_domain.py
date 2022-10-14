@@ -1,16 +1,36 @@
+from datetime import datetime
+
+import peewee_async
 import pytest
 
-from app.domain import get_observations, get_species
+from app import models
+from app.domain import create_observation, get_observations, get_species_list
 
 
 @pytest.mark.asyncio
-async def test_get_observations(db):
-    assert await get_observations(db) == [{'observation': '2022-10-03 12:31:43', 'species': 'Снегирь'}]
+async def test_get_observations(manager: peewee_async.Manager, observation: models.Observation):
+    assert await get_observations(manager) == [{'timestamp': '2022-10-03 05:31:43', 'species': 'Большой пёстрый дятел'}]
 
 
 @pytest.mark.asyncio
-async def test_get_species(db):
-    assert await get_species(db) == [
-        {'species': 'Снегирь', 'genus': 'Снегири'},
-        {'species': 'Певчий дрозд', 'genus': 'Настоящие дрозды'},
-    ]
+async def test_get_species(manager: peewee_async.Manager, species: models.Species):
+    assert await get_species_list(manager) == [{'species': 'Большой пёстрый дятел', 'genus': 'Пёстрые дятлы'}]
+
+
+@pytest.mark.asyncio
+async def test_create_observation(manager: peewee_async.Manager, species: models.Species):
+    timestamp = datetime.utcnow()
+
+    observation = await create_observation(
+        manager,
+        species_id=species.id,
+        timestamp=timestamp,
+        latitude=56.435,
+        longitude=84.982,
+    )
+
+    observation = await manager.get(models.Observation, id=observation.id)
+    assert observation.species_id == species.id
+    assert observation.timestamp == timestamp
+    assert observation.latitude == 56.435
+    assert observation.longitude == 84.982

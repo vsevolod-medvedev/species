@@ -1,15 +1,18 @@
 import asyncio
 
+import peewee_async
 import pytest
+import pytest_asyncio
 import uvloop
 
-from app.db import init_database, manager
+from app import models
+from app.db import init_database
 
 
 @pytest.fixture(scope='session', autouse=True)
-def db():
+def manager() -> peewee_async.Manager:
     db = init_database()
-    yield manager
+    yield peewee_async.Manager(db)
     db.close()
 
 
@@ -17,3 +20,31 @@ def db():
 def event_loop():
     uvloop.install()  # Use fast event loop implementation
     yield asyncio.get_event_loop()
+
+
+@pytest_asyncio.fixture(autouse=True)
+async def clean_db(manager: peewee_async.Manager) -> None:
+    with manager.allow_sync():
+        for model in (models.Observation, models.Species, models.Genus):
+            model.truncate_table(cascade=True)
+
+
+@pytest_asyncio.fixture
+async def genus(manager: peewee_async.Manager) -> models.Genus:
+    yield await manager.create(models.Genus, caption='Пёстрые дятлы')
+
+
+@pytest_asyncio.fixture
+async def species(manager: peewee_async.Manager, genus: models.Genus) -> models.Species:
+    yield await manager.create(models.Species, genus=genus, caption='Большой пёстрый дятел')
+
+
+@pytest_asyncio.fixture
+async def observation(manager: peewee_async.Manager, species: models.Species) -> models.Observation:
+    yield await manager.create(
+        models.Observation,
+        species=species,
+        timestamp='2022-10-03 05:31:43',
+        latitude=56.435,
+        longitude=84.982,
+    )

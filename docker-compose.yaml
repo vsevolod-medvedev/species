@@ -12,5 +12,26 @@ services:
     volumes:
       - pg-data:/var/lib/postgresql/data
 
+  db-test:
+    image: postgres:14.5-alpine
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: species_test_db
+      POSTGRES_USER: species_admin
+      POSTGRES_PASSWORD: species_admin
+
+  rabbitmq:
+    image: rabbitmq:3.9.23-management-alpine
+    environment:
+      RABBITMQ_LOG_LEVEL: info
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "61613:61613"
+    volumes:
+      - rmq-data:/var/lib/rabbitmq/
+
 volumes:
   pg-data:
+  rmq-data:

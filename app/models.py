@@ -1,4 +1,5 @@
 import peewee
+from playhouse.shortcuts import model_to_dict
 
 from app.db import database
 
@@ -6,6 +7,9 @@ from app.db import database
 class BaseModel(peewee.Model):
     class Meta:
         database = database
+
+    def to_dict(self):
+        return model_to_dict(self, recurse=False)
 
 
 class Genus(BaseModel):

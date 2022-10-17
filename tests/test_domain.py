@@ -8,13 +8,13 @@ from app.domain import create_observation, get_observations, get_species_list
 
 
 @pytest.mark.asyncio
-async def test_get_observations(manager: peewee_async.Manager, observation: models.Observation):
-    assert await get_observations(manager) == [{'timestamp': '2022-10-03 05:31:43', 'species': 'Большой пёстрый дятел'}]
+async def test_get_observations(observation: models.Observation):
+    assert await get_observations() == [{'timestamp': '2022-10-03 05:31:43', 'species': 'Большой пёстрый дятел'}]
 
 
 @pytest.mark.asyncio
-async def test_get_species(manager: peewee_async.Manager, species: models.Species):
-    assert await get_species_list(manager) == [{'species': 'Большой пёстрый дятел', 'genus': 'Пёстрые дятлы'}]
+async def test_get_species(species: models.Species):
+    assert await get_species_list() == [{'species': 'Большой пёстрый дятел', 'genus': 'Пёстрые дятлы'}]
 
 
 @pytest.mark.asyncio
@@ -22,7 +22,6 @@ async def test_create_observation(manager: peewee_async.Manager, species: models
     timestamp = datetime.utcnow()
 
     observation = await create_observation(
-        manager,
         species_id=species.id,
         timestamp=timestamp,
         latitude=56.435,

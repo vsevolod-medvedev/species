@@ -4,9 +4,11 @@ import peewee_async
 import pytest
 import pytest_asyncio
 import uvloop
+from aiohttp.pytest_plugin import AiohttpClient
 
 from app import models
 from app.db import init_database
+from app.server import Server
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -19,7 +21,7 @@ def manager() -> peewee_async.Manager:
 @pytest.fixture(scope='session', autouse=True)
 def event_loop():
     uvloop.install()  # Use fast event loop implementation
-    yield asyncio.get_event_loop()
+    yield asyncio.new_event_loop()
 
 
 @pytest_asyncio.fixture(autouse=True)
@@ -27,6 +29,17 @@ async def clean_db(manager: peewee_async.Manager) -> None:
     with manager.allow_sync():
         for model in (models.Observation, models.Species, models.Genus):
             model.truncate_table(cascade=True)
+
+
+@pytest_asyncio.fixture
+async def api_client(aiohttp_client) -> AiohttpClient:
+    app = Server().app
+    yield await aiohttp_client(app)
+
+
+@pytest.fixture
+def observations_endpoint() -> str:
+    return '/api/v1/observations'
 
 
 @pytest_asyncio.fixture

@@ -11,30 +11,9 @@ DB_PASS = 'species_admin'
 
 LOG_LEVEL = 'INFO'
 
-LOG_CONFIG = {
-    'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'default': {
-            'format': '{asctime} {levelname}:{name} - {message}',
-            'style': '{'
-        },
-    },
-    'handlers': {
-        'default': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'default',
-            'stream': 'ext://sys.stdout'
-        },
-    },
-    'loggers': {
-        '': {
-            'level': locals().get('LOG_LEVEL'),
-            'handlers': ['default'],
-        }
-    }
-}
-
-logging.config.dictConfig(LOG_CONFIG)
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s:%(name)s - %(message)s',
+    level=logging.INFO,
+)
 
 logging.info(f'Configured with LOG_LEVEL={LOG_LEVEL}')

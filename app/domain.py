@@ -1,6 +1,7 @@
 from app.db import manager
 from app.models import Genus, Observation, Species
 from app.schemas import CreateObservationRequest
+from app.stomp import send_stomp_message
 
 
 async def get_species_list() -> list[dict]:
@@ -27,4 +28,6 @@ async def create_observation(**kwargs) -> Observation:
     :raises pydantic.ValidationError
     """
     data = CreateObservationRequest.parse_obj(kwargs)
-    return await manager.create(Observation, **dict(data))
+    result = await manager.create(Observation, **dict(data))
+    await send_stomp_message(data={'event_type': 'create_observation', 'id': result.id})
+    return result

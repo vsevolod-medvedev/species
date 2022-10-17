@@ -3,8 +3,9 @@ import logging
 import uvloop
 from aiohttp import web
 
-from app.db import database, init_database
+from app.db import init_database
 from app.routes import routes
+from app.stomp import init_stomp_client
 
 logger = logging.getLogger(__name__)
 
@@ -23,13 +24,15 @@ class Server:
             port=port,
         )
 
-    @staticmethod
-    async def _do_startup(_: web.Application):
-        logger.info('Starting...')
-        init_database()
+    async def _do_startup(self, _: web.Application):
+        logger.info('Starting service...')
         uvloop.install()  # Use fast event loop implementation
+        logger.info('Connecting to database...')
+        self.database = init_database()
+        logger.info('Connecting to ActiveMQ...')
+        self.stomp_client = init_stomp_client()
 
-    @staticmethod
-    async def _do_cleanup(_: web.Application):
-        logger.info('Cleaning up...')
-        database.close()
+    async def _do_cleanup(self, _: web.Application):
+        logger.info('Stopping service...')
+        self.stomp_client.close()
+        self.database.close()

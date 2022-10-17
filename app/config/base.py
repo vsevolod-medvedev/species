@@ -9,6 +9,9 @@ DB_NAME = 'species_db'
 DB_USER = 'species_admin'
 DB_PASS = 'species_admin'
 
+AMQ_HOST = 'localhost'
+AMQ_PORT = 61613
+
 LOG_LEVEL = 'INFO'
 
 logging.basicConfig(

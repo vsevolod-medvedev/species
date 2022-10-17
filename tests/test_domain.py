@@ -18,7 +18,7 @@ async def test_get_species(species: models.Species):
 
 
 @pytest.mark.asyncio
-async def test_create_observation(manager: peewee_async.Manager, species: models.Species):
+async def test_create_observation(stomp_client, manager: peewee_async.Manager, species: models.Species):
     timestamp = datetime.utcnow()
 
     observation = await create_observation(

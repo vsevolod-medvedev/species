@@ -9,6 +9,7 @@ from aiohttp.pytest_plugin import AiohttpClient
 from app import models
 from app.db import init_database
 from app.server import Server
+from app.stomp import init_stomp_client
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -22,6 +23,13 @@ def manager() -> peewee_async.Manager:
 def event_loop():
     uvloop.install()  # Use fast event loop implementation
     yield asyncio.new_event_loop()
+
+
+@pytest.fixture(scope='session')
+def stomp_client():
+    client = init_stomp_client()
+    yield client
+    client.close()
 
 
 @pytest_asyncio.fixture(autouse=True)

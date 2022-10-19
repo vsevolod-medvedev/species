@@ -17,7 +17,7 @@ pre-commit install
 ## Running server
 
 ```shell
-docker-compose up -d db
+docker-compose up -d db rabbitmq
 python main.py 
 ```
 
@@ -26,6 +26,6 @@ Then try to open in browser: http://localhost:8080/api/v1/species
 ## Running tests
 
 ```shell
-docker-compose up -d db-test
+docker-compose up -d db-test rabbitmq
 ENV=unittest pytest
 ```

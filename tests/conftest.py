@@ -14,7 +14,7 @@ from app.stomp import init_stomp_client
 
 @pytest.fixture(scope='session', autouse=True)
 def manager() -> peewee_async.Manager:
-    db = init_database()
+    db = init_database(skip_data_migrations=True)
     yield peewee_async.Manager(db)
     db.close()
 
